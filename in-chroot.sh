@@ -14,6 +14,7 @@ hwclock --systohc
 
 cat > /etc/vconsole.conf <<EOF
 KEYMAP=dvorak-sv-a1
+FONT=Lat2-Terminus16
 EOF
 
 # Locale
@@ -35,29 +36,27 @@ LC_TELEPHONE=sv_SE.UTF-8
 LC_ADDRESS=sv_SE.UTF-8
 EOF
 
-awk -i inplace '{ gsub(/^HOOKS=.*$/, "HOOKS=(base udev autodetect systemd plymouth modconf block btrfs encrypt filesystems keyboard)") }; { print }' /etc/mkinitcpio.conf
+awk -i inplace '{ gsub(/^HOOKS=.*$/, "HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block btrfs sd-encrypt filesystems fsck)") }; { print }' /etc/mkinitcpio.conf
+grep -E '^HOOKS=' /etc/mkinitcpio.conf
 
 cat > /etc/kernel/cmdline <<EOF
 fbcon=nodefer rw rd.luks.allow-discards quiet bgrt_disable root=LABEL=system rootflags=subvol=@root,rw splash vt.global_cursor_default=0
 EOF
 
 cat > /etc/crypttab.initramfs <<EOF
-# system /dev/disk/by-partlabel/cryptsystem none timeout=180,tpm2-device=auto
-system /dev/disk/by-partlabel/cryptsystem none timeout=180
+system /dev/disk/by-partlabel/cryptsystem none timeout=180,tpm2-device=auto
 EOF
 
 # bootctl
-(
-set -x;
 bootctl install
 cat > /boot/loader/entries/arch.conf <<EOF
 title     Arch Linux Encrypted
 linux     /vmlinuz-linux
 initrd    /intel-ucode.img
 initrd    /initramfs-linux.img
-options   fbcon=nodefer rw rd.luks.allow-discards quiet bgrt_disable root=LABEL=system rootflags=subvol=@root,rw splash vt.global_cursor_default=0
+options   rd.luks.uuid=1ec77798-68b9-4dd4-9f0b-6d8890a04883 root=LABEL=system rootflags=subvol=@root,rw net.ifnames=1
+#options fbcon=nodefer rw rd.luks.allow-discards quiet bgrt_disable root=LABEL=system rootflags=subvol=@root,rw splash vt.global_cursor_default=0
 EOF
-)
 
 cat > /boot/loader/loader.conf <<EOF
 default   arch

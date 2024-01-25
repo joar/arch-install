@@ -9,6 +9,6 @@ pikaur -Sy plymouth-git --noconfirm --noedit
 
 plymouth-set-default-theme -R spinner
 sbctl generate-bundles -s
-bootctl install
+
 mkinitcpio -P
-bootctl update
+bootctl install

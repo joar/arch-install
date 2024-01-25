@@ -77,6 +77,7 @@ pacstrap /mnt \
   efibootmgr \
   dialog \
   neovim \
+  terminus-font \
   && genfstab -L -p /mnt > /mnt/etc/fstab \
 )
 

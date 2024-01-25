@@ -1,5 +1,5 @@
 set -x
-set -o errexit,pipefail
+set -o errexit pipefail
 
 cd ~ || exit 1
 # Install pikaur
