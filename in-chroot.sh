@@ -36,11 +36,13 @@ LC_TELEPHONE=sv_SE.UTF-8
 LC_ADDRESS=sv_SE.UTF-8
 EOF
 
-awk -i inplace '{ gsub(/^HOOKS=.*$/, "HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block btrfs sd-encrypt filesystems fsck)") }; { print }' /etc/mkinitcpio.conf
+awk -i inplace '{ gsub(/^HOOKS=.*$/, "HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block btrfs sd-encrypt filesystems fsck plymouth)") }; { print }' /etc/mkinitcpio.conf
 grep -E '^HOOKS=' /etc/mkinitcpio.conf
 
+X_KERNEL_OPTS="fbcon=nodefer rw rd.luks.allow-discards quiet bgrt_disable root=LABEL=system rootflags=subvol=@root,rw splash"
+
 cat > /etc/kernel/cmdline <<EOF
-fbcon=nodefer rw rd.luks.allow-discards quiet bgrt_disable root=LABEL=system rootflags=subvol=@root,rw splash vt.global_cursor_default=0
+$X_KERNEL_OPTS
 EOF
 
 cat > /etc/crypttab.initramfs <<EOF
@@ -48,14 +50,16 @@ system /dev/disk/by-partlabel/cryptsystem none timeout=180,tpm2-device=auto
 EOF
 
 # bootctl
+#
+efibootmgr | grep 'Linux Boot Manager' | awk '{ print $1 }' | sed -r 's/Boot([^*]{4})\*/\1/' | xargs --no-run-if-empty --max-args 1 efibootmgr --delete-bootnum --bootnum
 bootctl install
 cat > /boot/loader/entries/arch.conf <<EOF
 title     Arch Linux Encrypted
 linux     /vmlinuz-linux
 initrd    /intel-ucode.img
 initrd    /initramfs-linux.img
-options   rd.luks.uuid=1ec77798-68b9-4dd4-9f0b-6d8890a04883 root=LABEL=system rootflags=subvol=@root,rw net.ifnames=1
-#options fbcon=nodefer rw rd.luks.allow-discards quiet bgrt_disable root=LABEL=system rootflags=subvol=@root,rw splash vt.global_cursor_default=0
+
+options $X_KERNEL_OPTS
 EOF
 
 cat > /boot/loader/loader.conf <<EOF
