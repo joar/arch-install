@@ -93,7 +93,3 @@ passwd "$USERNAME" <<<"$(printf '%s\n' "${PASSWORD:?}" "$PASSWORD")"
 (
 awk -i inplace '{ gsub(/^# %wheel ALL=.*$/, "%wheel ALL=(ALL:ALL) ALL") }; { print }' /etc/sudoers
 )
-
-
-# reflector --protocol https --latest 20 --ipv4 --country se,no,dk,fi --sort country
-
