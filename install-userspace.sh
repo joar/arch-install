@@ -15,6 +15,7 @@ gsettings set org.gnome.desktop.interface enable-hot-corners false
 gsettings set org.gnome.desktop.sound event-sounds false
 gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type "'nothing'"
+gsettings set org.gnome.desktop.interface clock-show-seconds true
 # END desktop
 
 # BEGIN applications
@@ -48,3 +49,18 @@ sudo snapper -c root create-config /
 snapper -c root create-config /
 # END snapper
 
+
+# BEGIN wireshark
+sudo pacman -S wireshark-qt
+sudo usermod -aG wireshark joar
+# END wireshark
+
+# BEGIN zoxide
+# https://github.com/ajeetdsouza/zoxide
+sudo pacman -S zoxide
+# END zoxide
+
+# BEGIN difftastic
+# https://difftastic.wilfred.me.uk/
+sudo pacman -S difftastic
+# END difftastic
