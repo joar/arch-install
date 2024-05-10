@@ -113,5 +113,6 @@ keycode  54 = Shift
 keycode  56 = Alt
 keycode  57 = space            space
 keycode  58 = Caps_Lock
-keycode  86 = nul
+keycode  86 = less greater bar
+	alt     keycode  86 = Meta_less
 keycode  97 = Control
